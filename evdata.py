@@ -27,7 +27,7 @@ c=1
 
 # THESE ARE NOT VALID FILES TO PREVENT ACCIDENTAL DAMAGE
 cycle = 'Charge Depleting Highway'
-out = 'ev_data.csv'
+out = 'ev_data2.csv'
 
 data = ['EPA/10tstcar.csv','EPA/11tstcar.csv','EPA/12tstcar.csv',\
         'EPA/13tstcar.csv','EPA/14tstcar.csv','EPA/15tstcar.csv',\
@@ -51,20 +51,25 @@ for year in data:
         for row in reader:
             # pick out the same drive cycles
             if row[36] == 'Electricity':
-                
-                if row[34] == 'Charge Depleting Highway':
-                    row[34] = '1'
-                elif row[34] == 'Charge Depleting UDDS':
-                    row[34] = '2'
-                else:
-                    row[34] = '0'
-                    
-                if row[45] == '0' or row[45] == '':
+
+                engineSize = float(row[7])
+
+                if engineSize >= 0.2 and engineSize <= 10:
                     continue
                 else:
-                    c = c+1
-                    print c
-                    new.append(row),
+                     if row[34] == 'Charge Depleting Highway':
+                        row[34] = '1'
+                    elif row[34] == 'Charge Depleting UDDS':
+                        row[34] = '2'
+                    else:
+                        row[34] = '0'
+                        
+                    if row[45] == '0' or row[45] == '':
+                        continue
+                    else:
+                        c = c+1
+                        print c
+                        new.append(row),
     newlist = []
 
     for row in new:

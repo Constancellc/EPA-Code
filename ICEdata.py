@@ -30,7 +30,7 @@ out = 'pureEVdata.csv'
 
 data = ['EPA/10tstcar.csv','EPA/11tstcar.csv','EPA/12tstcar.csv',\
         'EPA/13tstcar.csv','EPA/14tstcar.csv','EPA/15tstcar.csv',\
-        'EPA/16tstcar.csv','EPA/17tstcar.csv','EPA/18tstcar.csv']
+        'EPA/16tstcar.csv','EPA/17tstcar.csv']
 
 # Older years have slightly different headings :(
 older = ['EPA/10tstcar.csv','EPA/11tstcar.csv','EPA/12tstcar.csv',\
@@ -72,7 +72,7 @@ for year in data:
                             fe = float(row[45])
                             if fe <= 40:
                                 fe = 3700/fe
-                            highways[row[5]] = str(fe)
+                            highways[row[5]] = stri(fe)
                         elif row[34] == 'Charge Depleting UDDS':
                             fe = float(row[45])
                             if fe <= 40:
@@ -96,28 +96,27 @@ for year in data:
                             ids.append(row[5])
                             
                         c = c+1
-                        print(c)
+                        print c
 
 newlist = []
 
-for idd in ids:
+for id in ids:
     flag = 0
     
     try:
-        highways[idd]
+        highways[id]
     except KeyError:
         flag = 1
     try:
-        udds[idd]
+        udds[id]
     except KeyError:
         flag = 1
 
     if flag == 0:
-        store = parameters[idd]+targets[idd]+[highways[idd],udds[idd]]
+        store = parameters[id]+targets[id]+[highways[id],udds[id]]
         newlist.append(store)
 
 # Write the reduced data to a csv file
-with open(out, 'w') as h:
+with open(out, 'wb') as h:
     writer = csv.writer(h)
-    for row in newlist:
-        writer.writerow(row)
+    writer.writerows(newlist)

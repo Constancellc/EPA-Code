@@ -6,19 +6,6 @@ THE RESULTS ARE ADDED TO THE CSV FILE 'OUT'
 
 RUN THIS SCRIPT WITH CAUTION TO AVOID CREATING DUPLICATES!!!
 
-THE OUTPUT CSV FILE CONTAINS THE FOLLOWING FIELDS:
-
-1 - year
-2 - brand + model
-3 - engine size (l)
-4 - horsepower
-5 - driven wheels
-6 - weight
-7 - axle ratio
-8 - n/v ratio
-9:11 - target coefficients
-12 - highways fe
-13 - udds fe
 """
 
 import csv
@@ -30,7 +17,7 @@ out = 'pureEVdata.csv'
 
 data = ['EPA/10tstcar.csv','EPA/11tstcar.csv','EPA/12tstcar.csv',\
         'EPA/13tstcar.csv','EPA/14tstcar.csv','EPA/15tstcar.csv',\
-        'EPA/16tstcar.csv','EPA/17tstcar.csv']
+        'EPA/16tstcar.csv','EPA/17tstcar.csv','EPA/18tstcar.csv']
 
 # Older years have slightly different headings :(
 older = ['EPA/10tstcar.csv','EPA/11tstcar.csv','EPA/12tstcar.csv',\
@@ -72,7 +59,7 @@ for year in data:
                             fe = float(row[45])
                             if fe <= 40:
                                 fe = 3700/fe
-                            highways[row[5]] = stri(fe)
+                            highways[row[5]] = str(fe)
                         elif row[34] == 'Charge Depleting UDDS':
                             fe = float(row[45])
                             if fe <= 40:
@@ -80,9 +67,7 @@ for year in data:
                             udds[row[5]] = str(fe)
 
                         # now get the chosen vehicle parameters    
-                        parameters[row[5]] = [row[0],row[3]+" "+row[4],row[7],\
-                                              row[10],row[17],row[21],row[22],\
-                                              row[23]]
+                        parameters[row[5]] = [row[0],row[3]+" "+row[4],row[21]]
                         # and finally the target coefficients
                         if year in older:
                             targets[row[5]] = [row[51],row[52],row[53]]
@@ -96,27 +81,29 @@ for year in data:
                             ids.append(row[5])
                             
                         c = c+1
-                        print c
 
 newlist = []
 
-for id in ids:
+for idd in ids:
     flag = 0
     
     try:
-        highways[id]
+        highways[idd]
     except KeyError:
         flag = 1
     try:
-        udds[id]
+        udds[idd]
     except KeyError:
         flag = 1
 
     if flag == 0:
-        store = parameters[id]+targets[id]+[highways[id],udds[id]]
+        store = parameters[idd]+targets[idd]+[highways[idd],udds[idd]]
         newlist.append(store)
 
 # Write the reduced data to a csv file
-with open(out, 'wb') as h:
+with open(out, 'w') as h:
     writer = csv.writer(h)
-    writer.writerows(newlist)
+    writer.writerow(['year','name','weight','Ta','Tb','Tc',
+                     'highways fuel economy','urban fuel economy'])
+    for row in newlist:
+        writer.writerow(row)

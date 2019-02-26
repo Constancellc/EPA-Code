@@ -17,7 +17,8 @@ out = 'pureEVdata.csv'
 
 data = ['EPA/10tstcar.csv','EPA/11tstcar.csv','EPA/12tstcar.csv',\
         'EPA/13tstcar.csv','EPA/14tstcar.csv','EPA/15tstcar.csv',\
-        'EPA/16tstcar.csv','EPA/17tstcar.csv','EPA/18tstcar.csv']
+        'EPA/16tstcar.csv','EPA/17tstcar.csv','EPA/18tstcar.csv',
+        'EPA/19tstcar.csv']
 
 # Older years have slightly different headings :(
 older = ['EPA/10tstcar.csv','EPA/11tstcar.csv','EPA/12tstcar.csv',\

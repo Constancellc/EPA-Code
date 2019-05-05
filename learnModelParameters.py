@@ -95,8 +95,8 @@ def _f(x,p0,index):
         E_u += p0
     E_u = E_u*2.77778e-7 # J -> kWh
 
-    f += np.power(E_h-v_obs[index][0],2)
-    f += np.power(E_u-v_obs[index][1],2)
+    f += np.power((E_h-v_obs[index][0])/v_obs[index][0],2)
+    f += np.power((E_u-v_obs[index][1])/v_obs[index][1],2)
 
     return f
 

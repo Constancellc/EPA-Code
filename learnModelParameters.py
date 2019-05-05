@@ -113,7 +113,7 @@ def learn_eff(p0,index):
 best_eff = None
 best_p0 = None
 lwst = 1000000
-for p0 in range(100,1200,100):
+for p0 in range(1100,1800,10):
     print(p0)
     eff = []
     f = 0
@@ -126,11 +126,11 @@ for p0 in range(100,1200,100):
         best_p0 = p0
         best_eff = eff
         
-        
 results = []
 for v in range(len(v_params)):
-    results.append(v_parms[v]+[best_eff[v]])
-        
+    results.append(v_params[v]+[best_eff[v]])
+
+print(best_p0)       
         
 '''
             

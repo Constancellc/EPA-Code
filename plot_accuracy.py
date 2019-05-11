@@ -2,55 +2,73 @@ import csv
 import numpy as np
 import copy
 import matplotlib.pyplot as plt
+import csv
+import numpy as np
+import copy
+import matplotlib.pyplot as plt
+import matplotlib.markers as ms
 
 datafile = 'pureEVdataIncCapacity.csv'
-params = 'EVmodelParameters.csv'
+outfile = 'EVmodelParameters.csv'
 
+v_h = []
+v_u = []
+with open('highways.csv','rU') as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        v_h.append(float(row[1])*0.277778)
+        
+with open('UDDS.csv','rU') as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+        v_u.append(float(row[1])*0.277778)
+
+
+        #P0 = 1390 W
+s_h = copy.deepcopy(sum(v_h)/1000)
+s_u = copy.deepcopy(sum(v_u)/1000)
+
+a_h = [0]
+a_u = [0]
+for i in range(0,len(v_h)-1):
+    a_h.append(v_h[i+1]-v_h[i])
+for i in range(len(v_u)-1):
+    a_u.append(v_u[i+1]-v_u[i])
+   
+v_params = []
+hwys_x = []
+udds_x = []
 data = []
 with open(datafile,'rU') as csvfile:
     reader = csv.reader(csvfile)
     next(reader)
     for row in reader:
-        data.append(row) # year, model, capacity, weight, Ta-Tc, h fe, u fe
+        year = row[0]
+        model = row[1]
+        cap = float(row[2])
+        mass = float(row[3])/2.2 #lbs -> kg
+        Ta = float(row[4])*4.44822 # convert lbf to N
+        Tb = float(row[5])*9.9503 # lbf/mph -> N/mps
+        Tc = float(row[6])*22.258 # lbf/mph2 -> N/(mps)^2 
+        fe_h = 20.944*s_h/float(row[7])
+        fe_u = 20.944*s_u/float(row[8])
+        v_params.append([year,model,cap,mass,Ta,Tb,Tc])
+        hwys_x.append(fe_h)
+        udds_x.append(fe_u)
 
-highways = []
-urban = []
-with open('highways.csv','rU') as csvfile:
-    reader = csv.reader(csvfile)
-    for row in reader:
-        highways.append(float(row[1])*0.277778)
-        
-with open('UDDS.csv','rU') as csvfile:
-    reader = csv.reader(csvfile)
-    for row in reader:
-        urban.append(float(row[1])*0.277778)
-
-def fit(m,T_a,T_b,T_c,fe_h,fe_u,p0):
-    #p0 = 1070 # J/s
-    T_a = T_a*4.44822 # convert lbf to N
-    T_b = T_b*9.9503 # lbf/mph -> N/mps
-    T_c = T_c*22.258 # lbf/mph2 -> N/(mps)^2 
-
-    v_h = copy.copy(highways)
-    v_u = copy.copy(urban)
-
-    s_h = sum(v_h)/1000 # km
-    s_u = sum(v_u)/1000 # km
-
-    a_h = [0]
-    a_u = [0]
-
-    for i in range(0,len(v_h)-1):
-        a_h.append(v_h[i+1]-v_h[i])
-    for i in range(len(v_u)-1):
-        a_u.append(v_u[i+1]-v_u[i])
+v_forces = []
+for v in v_params:
+    m = copy.deepcopy(v[3])
+    T_a = copy.deepcopy(v[4])
+    T_b = copy.deepcopy(v[5])
+    T_c = copy.deepcopy(v[6]) 
 
     F_h = []
     F_u = []
     for value in v_h:
-        F_h.append(T_a + T_b*value + T_c*value*value)
+        F_h.append(T_a+T_b*value+T_c*value*value)
     for value in v_u:
-        F_u.append(T_a + T_b*value + T_c*value*value)
+        F_u.append(T_a+T_b*value+T_c*value*value)
 
     for i in range(0,len(a_h)):
         F_h[i] += m*a_h[i]
@@ -58,72 +76,67 @@ def fit(m,T_a,T_b,T_c,fe_h,fe_u,p0):
     for i in range(0,len(a_u)):
         F_u[i] += m*a_u[i]
         F_u[i] = F_u[i]*v_u[i]
+    v_forces.append([F_h,F_u])
 
-    best = None
-    smallest = 100000000
     
-    y_h = 20.944*s_h/fe_h # observed - kWh
-    y_u = 20.944*s_u/fe_u # observed - kWh
-    
-    y = y_h+y_u
 
-    for eff in np.arange(0.5,1,0.001):
-        E = 0
-        
-        for i in range(len(a_h)):
-            if a_h[i] >= 0:
-                E += copy.copy(F_h[i])/eff
-            else:
-                E += copy.copy(F_h[i])*eff
-            E += p0
-            
-        for i in range(len(a_u)):
-            if a_u[i] >= 0:
-                E += copy.copy(F_u[i])/eff
-            else:
-                E += copy.copy(F_u[i])*eff
-            E += p0
-            
-        E = E*2.77778e-7 # J -> kWh
+def _f(x,p0,index):
+    F_h = copy.deepcopy(v_forces[index][0])
+    F_u = copy.deepcopy(v_forces[index][1])
 
-        if abs(E-y) < smallest:
-            smallest = abs(E-y)
-            best = eff
+    E_h = 0
+    E_u = 0
 
-    return best, smallest
+    for t in range(len(a_h)):
+        if a_h[t] >= 0:
+            E_h += F_h[t]/x
+        else:
+            E_h += F_h[t]*x
+        E_h += p0
+    E_h = E_h*2.77778e-7 # J -> kWh
 
+    for t in range(len(a_u)):
+        if a_u[t] >= 0:
+            E_u += F_u[t]/x
+        else:
+            E_u += F_u[t]*x
+        E_u += p0
+    E_u = E_u*2.77778e-7 # J -> kWh
 
-results = []
-tot = []
-for p in [587]:#range(575,600,1):
-    se = 0
-    for row in data:
-        year = row[0]
-        model = row[1]
-        cap = float(row[2])
-        mass = float(row[3])/2.2 #lbs -> kg
-        Ta = float(row[4])
-        Tb = float(row[5])
-        Tc = float(row[6])
-        fe_h = float(row[7])
-        fe_u = float(row[8])
+    return E_h,E_u
 
-        eff,err = fit(mass,Ta,Tb,Tc,fe_h,fe_u,p)
-        se += err
+eff = []
+with open(outfile,'r') as csvfile:
+    reader = csv.reader(csvfile)
+    next(reader)
+    for row in reader:
+        eff.append(float(row[-1]))
+
+hwys_y = []
+udds_y = []
+
+for v in range(len(eff)):
+    f1,f2 = _f(eff[v],1310,v)
+    hwys_y.append(f1)
+    udds_y.append(f2)
 
 
-        results.append([year,model,cap,mass,Ta,Tb,Tc,eff])
-    
-    tot.append(se)
 
-plt.figure(1)
-plt.plot(range(575,600,1),tot)
+plt.figure()
+plt.rcParams["font.family"] = 'serif'
+plt.rcParams['font.size'] = 14
+plt.scatter(hwys_y,hwys_x,label='Highways',marker='x',c='b')
+plt.scatter(udds_y,udds_x,80,label='Urban',marker= '+',c='r')
+plt.plot([0,5],[0,5],ls='--',c='gray',label='y=x')
+plt.xlim(0.75,4.25)
+plt.ylim(0.75,4.25)
+plt.xlabel('Predited Consumption (kWh)')
+plt.ylabel('Observed Consumption (kWh)')
+plt.grid(ls=':')
+plt.legend()
+plt.tight_layout()
+plt.savefig('../Dropbox/thesis/chapter3/img/qq.eps',format='eps',
+            dpi=1000, bbox_inches='tight', pad_inches=0.1)
 plt.show()
 
-print(tot)
-with open(outfile,'w') as csvfile:
-    writer = csv.writer(csvfile)
-    writer.writerow(['year','model','capacity (kWh)','mass (kg)','Ta','Tb',
-                     'Tc','efficiency'])
-    for row in results:
-        writer.writerow(row)
+

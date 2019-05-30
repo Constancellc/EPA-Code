@@ -115,10 +115,17 @@ with open(outfile,'r') as csvfile:
 hwys_y = []
 udds_y = []
 
+
 for v in range(len(eff)):
     f1,f2 = _f(eff[v],1310,v)
     hwys_y.append(f1)
     udds_y.append(f2)
+
+se = 0
+for v in range(len(eff)):
+    se += np.power(hwys_y[v]-hwys_x[v],2)
+    se += np.power(udds_y[v]-udds_y[v],2)
+print(np.sqrt(se/(2*len(eff))))
 
 
 
@@ -130,7 +137,7 @@ plt.scatter(udds_y,udds_x,80,label='Urban',marker= '+',c='r')
 plt.plot([0,5],[0,5],ls='--',c='gray',label='y=x')
 plt.xlim(0.75,4.25)
 plt.ylim(0.75,4.25)
-plt.xlabel('Predited Consumption (kWh)')
+plt.xlabel('Predicted Consumption (kWh)')
 plt.ylabel('Observed Consumption (kWh)')
 plt.grid(ls=':')
 plt.legend()

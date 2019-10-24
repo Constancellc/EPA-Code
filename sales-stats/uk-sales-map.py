@@ -201,18 +201,17 @@ with open('2030.csv','w') as csvfile:
     for i in range(len(z3)):
         writer.writerow([lalist[i],z3[i]])
 # create new figure, axes instances.
-
+'''
 fig=plt.figure(figsize=(3,8))
 plt.rcParams["font.family"] = 'serif'
 plt.rcParams['font.size'] = 9
 '''
-fig=plt.figure(figsize=(10,8))
+fig=plt.figure(figsize=(10,4))
 plt.rcParams["font.family"] = 'serif'
 plt.rcParams['font.size'] = 12
 
 plt.subplot(1,3,1)
 plt.title(str(years[0]))
-'''
 ax = plt.gca()
 # setup mercator map projection.
 
@@ -235,8 +234,8 @@ def find_nearest(p1):
 
     return best
 
-x = np.arange(-7,3,0.02)
-y = np.arange(49,59,0.02)
+x = np.arange(-7,3,0.2)
+y = np.arange(49,59,0.2)
 
 Z = np.zeros((len(x),len(y)))
 Z2 = np.zeros((len(x),len(y)))
@@ -263,7 +262,7 @@ for i in range(len(x)):
             Z3[i,j] = z3[best]
         else:
             continue
-'''
+        
 im = m.pcolor(X,Y,Z,vmin=0,vmax=100,cmap=blue2)
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="5%", pad=0.05)
@@ -285,7 +284,6 @@ plt.subplot(1,3,3)
 plt.title(str(years[2]))
 
 ax = plt.gca()
-'''
 m = Basemap(llcrnrlon=-7,llcrnrlat=49.9,urcrnrlon=2.2,urcrnrlat=58.7,\
             resolution='h',projection='merc',\
             lat_0=40.,lon_0=-20.,lat_ts=20.)
@@ -299,7 +297,7 @@ plt.colorbar(im, cax=cax)
 plt.tight_layout()
 #plt.savefig('../../Dropbox/thesis/chapter3/img/scurve.eps', format='eps', dpi=1000,
 #            bbox_inches='tight', pad_inches=0)
-plt.savefig('../../Dropbox/papers/Nature/img/scurve.eps', format='eps', dpi=1000,
+plt.savefig('../../Dropbox/papers/proposal/evs_scurve.eps', format='eps', dpi=300,
             bbox_inches='tight', pad_inches=0)
 
 

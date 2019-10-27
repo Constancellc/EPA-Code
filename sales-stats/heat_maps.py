@@ -128,8 +128,8 @@ def find_nearest(p1):
 
     return best
 
-x = np.arange(-7,3,0.2)
-y = np.arange(49,59,0.2)
+x = np.arange(-7,3,0.02)
+y = np.arange(49,59,0.02)
 
 Z = np.zeros((len(x),len(y)))
 Z2 = np.zeros((len(x),len(y)))
@@ -157,7 +157,7 @@ for i in range(len(x)):
         else:
             continue
         
-im = m.pcolor(X,Y,Z,vmin=0,vmax=100,cmap=blue2)
+im = m.pcolor(X,Y,Z,vmin=0,vmax=80,cmap=blue2)
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="5%", pad=0.05)
 plt.colorbar(im, cax=cax)
@@ -169,7 +169,7 @@ m = Basemap(llcrnrlon=-7,llcrnrlat=49.9,urcrnrlon=2.2,urcrnrlat=58.7,\
             resolution='h',projection='merc',\
             lat_0=40.,lon_0=-20.,lat_ts=20.)
 m.drawcoastlines()
-im = m.pcolor(X,Y,Z2,vmin=0,vmax=100,cmap=blue2)
+im = m.pcolor(X,Y,Z2,vmin=0,vmax=80,cmap=blue2)
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="5%", pad=0.05)
 plt.colorbar(im, cax=cax)
@@ -183,7 +183,7 @@ m = Basemap(llcrnrlon=-7,llcrnrlat=49.9,urcrnrlon=2.2,urcrnrlat=58.7,\
             lat_0=40.,lon_0=-20.,lat_ts=20.)
             
 m.drawcoastlines()
-im = m.pcolor(X,Y,Z3,vmin=0,vmax=100,cmap=blue2)
+im = m.pcolor(X,Y,Z3,vmin=0,vmax=80,cmap=blue2)
 divider = make_axes_locatable(ax)
 cax = divider.append_axes("right", size="5%", pad=0.05)
 plt.colorbar(im, cax=cax)

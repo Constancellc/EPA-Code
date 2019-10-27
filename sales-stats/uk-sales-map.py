@@ -234,8 +234,8 @@ def find_nearest(p1):
 
     return best
 
-x = np.arange(-7,3,0.2)
-y = np.arange(49,59,0.2)
+x = np.arange(-7,3,0.02)
+y = np.arange(49,59,0.02)
 
 Z = np.zeros((len(x),len(y)))
 Z2 = np.zeros((len(x),len(y)))

@@ -29,7 +29,7 @@ plt.ylabel('Thousands of Vehicles')
 plt.xlabel('Year')
 plt.grid(zorder=0.5)
 plt.xticks(range(2011,2020),['2011','2012','2013','2014','2015','2016',
-                             '2017','2018','2019*'])
+                             '2017','2018','2019'])
 plt.tight_layout()
 plt.savefig('../../Dropbox/thesis/chapter1/sales.eps', format='eps',
             dpi=300, bbox_inches='tight', pad_inches=0.0)

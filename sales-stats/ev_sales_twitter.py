@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-fitStart = 55
+fitStart = 1#55
 
 plotMax = 2040
 EVlifetime = 10*12
@@ -65,9 +65,13 @@ plt.subplot(1,2,1)
 plt.xticks(range(4,9*12+4,12),['2011','2012','2013','2014','2015','2016','2017',
                                '2018','2019'])
 plt.fill_between(range(0,len(y)),y,color='#AAFFAA',zorder=2,label='PHEVs')
-
+plt.plot(range(0,len(y)),y,c='k',zorder=2)
 plt.subplot(1,2,2)
 plt.fill_between(range(0,len(s)),s,color='#AAFFAA',zorder=2)
+
+plt.plot(range(0,len(s)),s,c='k',zorder=2)
+
+
 # Now let's see just pure evs
 
 
@@ -110,13 +114,15 @@ for i in range(0,len(y)+10):
 
 
 plt.subplot(1,2,1)
-plt.yticks(np.arange(0,0.05,0.005),np.arange(0,5,0.5))
-plt.ylim(0,0.046)
+plt.yticks(np.arange(0,0.07,0.01),np.arange(0,7,1))
+plt.ylim(0,0.067)
 plt.ylabel('Percentage of New Sales')
 plt.title('Observed')
-plt.xticks(range(4,9*12+4,12),['2011','2012','2013','2014','2015','2016','2017',
-                               '2018','2019'])
-plt.fill_between(range(0,len(y)),y,color='#AAAAFF',zorder=2,label='BEVs')
+plt.xticks(range(4,10*12+4,12),['2011','2012','2013','2014','2015','2016','2017',
+                               '2018','2019','2020'])
+plt.fill_between(range(0,len(y)),y,color='#AAAAFF',zorder=2,
+                 label='BEVs')
+plt.plot(range(0,len(y)),y,c='k',zorder=2)
 plt.grid(zorder=0)
 plt.legend(loc=2)
 plt.xlim(0,len(y)-1)
@@ -125,7 +131,8 @@ plt.subplot(1,2,2)
 plt.ylim(0,100)
 plt.xlim(0,len(s)-1)
 plt.title('Forecast')
-plt.fill_between(range(0,len(s)),s,color='#AAAAFF',zorder=2)
+plt.fill_between(range(0,len(s)),s,color='#AAAAFF',zorder=3)
+plt.plot(range(0,len(s)),s,c='k',zorder=3)
 plt.grid(zorder=0)
 plt.xticks(range(52,52+60*8,60),['2015','2020','2025','2030','2035','2040',
                                   '2045','2050'])

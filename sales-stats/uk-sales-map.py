@@ -200,6 +200,12 @@ with open('2030.csv','w') as csvfile:
     writer.writerow(['LA','%'])
     for i in range(len(z3)):
         writer.writerow([lalist[i],z3[i]])
+
+with open('2025.csv','w') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['LA','%'])
+    for i in range(len(z2)):
+        writer.writerow([lalist[i],z2[i]])
 # create new figure, axes instances.
 '''
 fig=plt.figure(figsize=(3,8))

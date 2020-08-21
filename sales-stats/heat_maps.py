@@ -191,8 +191,8 @@ plt.colorbar(im, cax=cax)
 plt.tight_layout()
 #plt.savefig('../../Dropbox/thesis/chapter3/img/scurve.eps', format='eps', dpi=1000,
 #            bbox_inches='tight', pad_inches=0)
-plt.savefig('../../Dropbox/papers/proposal/eh_scurve.eps', format='eps', dpi=300,
-            bbox_inches='tight', pad_inches=0)
+#plt.savefig('../../Dropbox/papers/proposal/eh_scurve.eps', format='eps', dpi=300,
+#            bbox_inches='tight', pad_inches=0)
 
 
 plt.show()

@@ -18,29 +18,57 @@ with open('ev_sales.csv','rU') as csvfile:
     next(reader)
     for row in reader:
         y_ev.append(float(row[2])/float(row[4]))
-        y_grant.append(float(row[3])/float(row[4]))
+        y_grant.append(float(row[3]))
         total.append(float(row[4]))
+y_grant = list(reversed(y_grant))
 
-vpm = sum(total)/len(total)
-y = []
-for i in range(0,len(y_grant)):
-    y.append(y_grant[len(y_grant)-1-i])
-
-
-
+cum_per = [0]
+for x in y_grant:
+    cum_per.append(cum_per[-1]+x/32000000)
+    
 inv = []
-for i in range(0,len(y)):
-    inv.append(np.log(y[i]/(1-y[i])))
+for i in range(0,len(cum_per)):
+    inv.append(np.log(cum_per[i]/(1-cum_per[i])))
 
-[m,c] = np.polyfit(range(fitStart,len(y)),inv[fitStart:],1)
+[m,c] = np.polyfit(range(50,len(inv)),inv[50:],1)
 print([m,c])
 def scurve(x):
     st = m*x+c
     return 1/(1+np.exp(-st))
 
+first3_5=None
+first7=None
 s = []
 for i in range(0,520):
-    s.append(100*scurve(i))
+    s.append(32000*scurve(i))
+    if s[i] > 2485.714 and first3_5 is None:
+        first3_5 = i 
+    if s[i] > 1242.857 and first7 is None:
+        first7 = i 
+        
+
+existing = [0]
+for x in y_grant:
+    existing.append(existing[-1]+x/1e3)
+    
+plt.figure()
+plt.rcParams["font.family"] = 'serif'
+plt.rcParams["font.size"] = '10'
+plt.plot(s)
+plt.scatter(range(len(y_grant)),existing[1:],c='k',marker='x')
+plt.plot([first3_5,first3_5],[0,2485.714],c='g',ls='--',label='3.5 kW chargers')
+plt.plot([0,first3_5],[2485.714,2485.714],c='g',ls='--')
+plt.plot([first7,first7],[0,1242.857],c='m',ls='--')
+plt.plot([0,first7],[1242.857,1242.857],c='m',ls='--',label='7 kW chargers')
+plt.xticks(range(16,9*24+16,24),['2012','2014','2016','2018','2020','2022',
+                                 '2024','2026','2028'])
+plt.xlim(52,52+60*2.5)
+plt.ylim(0,5000)
+plt.ylabel('Number of EVs (000s)')
+plt.grid(ls=':')
+plt.legend()
+plt.tight_layout()
+plt.show()
 
 newEVs = []
 for i in range(0,len(s)):
@@ -64,8 +92,8 @@ plt.rcParams["font.family"] = 'serif'
 plt.rcParams["font.size"] = '10'
 
 plt.subplot(1,2,1)
-plt.xticks(range(4,9*12+4,12),['2011','2012','2013','2014','2015','2016','2017',
-                               '2018','2019'])
+plt.xticks(range(16,9*24+16,24),['2012','2014','2016','2018','2020','2022',
+                                 '2024','2026','2028'])
 plt.fill_between(range(0,len(y)),y,color='#AAFFAA',zorder=2,label='PHEVs')
 plt.plot(range(0,len(y)),y,c='k',zorder=2)
 plt.subplot(1,2,2)

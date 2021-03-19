@@ -93,7 +93,7 @@ def scurve(x):
     return 1/(1+np.exp(-st))
 
 s = []
-for i in range(0,520):
+for i in range(0,390):
     s.append(100*scurve(i))
 
 newEVs = []
@@ -117,11 +117,11 @@ for i in range(0,len(y)+10):
 
 plt.subplot(1,2,1)
 plt.yticks(np.arange(0,0.38,0.05),np.arange(0,40,5))
-plt.ylim(0,0.4)
+plt.ylim(0,0.25)
 plt.ylabel('Percentage of New Sales')
 plt.title('Observed')
-plt.xticks(range(4,10*12+4,12),['2011','2012','2013','2014','2015','2016','2017',
-                               '2018','2019','2020'])
+plt.xticks(range(4,11*12+4,12),['2011','2012','2013','2014','2015','2016','2017',
+                               '2018','2019','2020','2021'])
 plt.fill_between(range(0,len(y)),y,color='#AAAAFF',zorder=2,
                  label='BEVs')
 plt.plot(range(0,len(y)),y,c='k',zorder=2)
@@ -136,8 +136,7 @@ plt.title('Forecast')
 plt.fill_between(range(0,len(s)),s,color='#AAAAFF',zorder=3)
 plt.plot(range(0,len(s)),s,c='k',zorder=3)
 plt.grid(zorder=0)
-plt.xticks(range(52,52+60*8,60),['2015','2020','2025','2030','2035','2040',
-                                  '2045','2050'])
+plt.xticks(range(52,52+60*6,60),['2015','2020','2025','2030','2035','2040'])
 plt.tight_layout()
 
 plt.savefig('../../Documents/forecast.jpg', format='jpg', dpi=300,
